@@ -1,5 +1,6 @@
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Scanner;
 
 enum TransactionType {
     INCOME,
@@ -68,7 +69,7 @@ public class Transaction {
         // Format date
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 
-        return formatter.format(this.date) + "," + this.type.toString() + "," + this.amount + "," +
-        this.note + "," + this.isRecurring + "," + Integer.toString(this.recurringDay) + "," + Integer.toString(this.category) + "\n";
+        return Integer.toString(id) + "," + formatter.format(this.date) + "," + this.type.toString() + "," + this.amount + "," +
+        this.note + "," + this.isRecurring + "," + Integer.toString(this.recurringDay) + "," + Integer.toString(this.category);
     }
 }
