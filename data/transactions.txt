@@ -1,0 +1,2 @@
+2024/01/17,EXPENSE,500.0,Uber Eats,false,0,2
+2024/01/17,EXPENSE,400.0,Loan,true,30,3
