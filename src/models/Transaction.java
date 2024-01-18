@@ -1,11 +1,9 @@
+package models;
+
+import models.enums.TransactionType;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Scanner;
-
-enum TransactionType {
-    INCOME,
-    EXPENSE
-}
 
 public class Transaction {
     private int id = 0;
@@ -43,7 +41,7 @@ public class Transaction {
     public String getNote() {
         return note;
     }
-    
+
 
     public boolean isRecurring() {
         return isRecurring;
@@ -65,11 +63,11 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public String getTransactionData() {
+    public String getTransactionData(int transactionId) {
         // Format date
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 
-        return Integer.toString(id) + "," + formatter.format(this.date) + "," + this.type.toString() + "," + this.amount + "," +
-        this.note + "," + this.isRecurring + "," + Integer.toString(this.recurringDay) + "," + Integer.toString(this.category);
+        return transactionId + "," + formatter.format(this.date) + "," + this.type.toString() + "," + this.amount + "," +
+                this.note + "," + this.isRecurring + "," + this.recurringDay + "," + this.category;
     }
 }
