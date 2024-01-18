@@ -1,5 +1,9 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
@@ -26,24 +30,28 @@ public class App {
         System.out.println("7. Delete a category");
         System.out.println("8. View all categories");
         System.out.println("9. View a category");
+        System.out.println("0 - Exit");
 
         try (Scanner scanner = new Scanner(System.in)) {
             int userInput = scanner.nextInt();
+            boolean isContinue = true;
 
             switch (userInput) {
                 case 1:
                     System.out.println("********** Add a new transaction **********");
-                    enterNewTransaction(categoryFile, transactionFile);
+                    enterNewTransaction(categoryFile, transactionFile, scanner);
                     break;
                 case 2:
                     System.out.println("********** Edit a transaction **********");
-                    editTransaction(categoryFile, transactionFile);
+                    editTransaction(categoryFile, transactionFile, scanner);
                     break;
                 case 3:
-                    System.out.println("Delete a transaction");
+                    System.out.println("********** Delete a transaction **********");
+                    deleteTransaction(transactionFile, scanner);
                     break;
                 case 4:
-                    System.out.println("View all transactions");
+                    System.out.println("********** View all transactions **********");
+                    showTransactions(transactionFile);
                     break;
                 case 5:
                     System.out.println("Add a new category");
@@ -61,16 +69,37 @@ public class App {
                 case 9:
                     System.out.println("View a category");
                     break;
+                case 0:
+                    System.out.println("Exit - Thank you for using the application");
+                    isContinue = false;
+                    break;
                 default:
                     System.out.println("Invalid input");
-                    showMainMenu();
                     break;
             }
+
+            if (!isContinue) {
+                return;
+            }
+
+            System.out.println("Do you want to continue? (Y/N)");
+            String continueInput = scanner.next();
+
+            System.out.println(continueInput);
+
+            if (continueInput.equals("Y") || continueInput.equals("y")) {
+                System.out.println("*********************************************************");
+                showMainMenu();
+            } else {
+                System.out.println("Thank you for using the application");
+            }
+
+            scanner.close();
         }
     }
 
-    public static Transaction generateTransactionViaUserInput(File categoryFile) {
-        try (Scanner scanner = new Scanner(System.in)) {
+    public static Transaction generateTransactionViaUserInput(File categoryFile, File transactionFile, Scanner scanner) {
+        try {
             // Get Expense or Income
             System.out.println("Please enter the type: ");
             System.out.println("1. Expense");
@@ -107,14 +136,12 @@ public class App {
             boolean isRecurring = false;
             int recurringDay = 0;
 
-            if (type == TransactionType.INCOME) {
-                isRecurring = false;
-                recurringDay = 0;
-            } else {
+            if (type == TransactionType.EXPENSE) {
                 System.out.println("Please enter if the transaction is recurring: ");
                 System.out.println("1. Yes");
                 System.out.println("2. No");
                 int isRecurringInput = scanner.nextInt();
+
                 if (isRecurringInput == 1) {
                     isRecurring = true;
                 } else if (isRecurringInput == 2) {
@@ -129,20 +156,35 @@ public class App {
                 recurringDay = scanner.nextInt();
             }
 
+            // Find the last transaction ID
+            int transactionId = 0;
+            FileInputStream fis = new FileInputStream(transactionFile);
+            byte[] byteArray = new byte[(int) transactionFile.length()];
+            fis.read(byteArray);
+            String data = new String(byteArray);
+            String[] stringArray = data.split("\n");
+
+            transactionId = stringArray.length + 1;
+            fis.close();
+
             // Create a new transaction
-            Transaction transaction = new Transaction(amount, type, note, isRecurring, recurringDay, categoryId);
+            Transaction transaction = new Transaction(transactionId, amount, type, note, isRecurring, recurringDay, categoryId);
 
             return transaction;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
     // 1 - Add a new transaction
-    public static void enterNewTransaction(File categoryFile, File transactionFile) {
+    public static void enterNewTransaction(File categoryFile, File transactionFile, Scanner scanner) {
 
-        Transaction transaction = generateTransactionViaUserInput(categoryFile);
+        Transaction transaction = generateTransactionViaUserInput(categoryFile, transactionFile, scanner);
+
         // Write the transaction to the file transactionFile
         try (FileWriter transcationWriter = new FileWriter(transactionFile, true)) {
-            transcationWriter.write(transaction.getTransactionData());
+            transcationWriter.write(transaction.getTransactionData() + "\n");
             transcationWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -150,52 +192,106 @@ public class App {
     }
 
     // 2 - Edit a transaction
-    public static void editTransaction(File categoryFile, File transactionFile) {
-        System.out.println("Enter the transaction ID: ");
-        try (Scanner scanner = new Scanner(System.in)) {
+    public static void editTransaction(File categoryFile, File transactionFile, Scanner scanner) {
+        System.out.print("Enter the transaction ID to be edited: ");
+        try {
             int transactionId = scanner.nextInt();
-            StringBuffer buffer = new StringBuffer();
-            boolean isFound = false;
-            String fileContents = "";
-            String matchedLine = "";
+            File tempFile = new File("data/temp.txt");
 
-            // Get the transaction from the file transactionFile
-            try (Scanner myReader = new Scanner(transactionFile)) {
-                while (myReader.hasNextLine()) {
-                    String data = myReader.nextLine();
-                    // Reading lines of the file and appending them to StringBuffer
-                    buffer.append(data + System.lineSeparator());
-                    fileContents = buffer.toString();
+            BufferedReader reader = new BufferedReader(new FileReader(transactionFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
 
-                    // Split the data into an array
-                    String[] dataArray = data.split(",");
-                    System.out.println(dataArray[0]);
-                    if (Integer.parseInt(dataArray[0]) == transactionId) {
-                        isFound = true;
-                        matchedLine = data;
-                    }
+            String currentLine;
+
+            while ((currentLine = reader.readLine()) != null) {
+                // trim newline when comparing with lineToRemove
+                String trimmedLine = currentLine.trim();
+                String[] dataArray = trimmedLine.split(",");
+                if (Integer.parseInt(dataArray[0]) == transactionId) {
+                    Transaction transaction = generateTransactionViaUserInput(categoryFile, transactionFile, scanner);
+                    writer.write(transaction.getTransactionData() + System.getProperty("line.separator"));
+                } else {
+                    writer.write(currentLine + System.getProperty("line.separator"));
                 }
-            } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
             }
 
-            if (isFound) {
-                System.out.println("Transaction found with ID: " + transactionId);
-                Transaction transaction = generateTransactionViaUserInput(categoryFile);
+            writer.close();
+            reader.close();
 
-                // Write the transaction to the file transactionFile
-                fileContents = fileContents.replaceAll(matchedLine, transaction.getTransactionData());
-                try (FileWriter transcationWriter = new FileWriter(transactionFile)) {
-                    transcationWriter.write(fileContents);
-                    transcationWriter.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            // Delete the original file
+            transactionFile.delete();
+
+            // Rename the new file to the filename the original file had.
+            boolean successful = tempFile.renameTo(transactionFile);
+            if (successful) {
+                System.out.println("Transaction edited successfully");
             } else {
-                System.out.println("Transaction not found");
-                showMainMenu();
+                System.out.println("Transaction not edited");
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // 3 - Delete a transaction
+    public static void deleteTransaction(File transactionFile, Scanner scanner) {
+        System.out.print("Enter the transaction ID to delete: ");
+
+        try {
+            int transactionId = scanner.nextInt();
+            File tempFile = new File("data/temp.txt");
+
+            BufferedReader reader = new BufferedReader(new FileReader(transactionFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+            String currentLine;
+
+            while ((currentLine = reader.readLine()) != null) {
+                // trim newline when comparing with lineToRemove
+                String trimmedLine = currentLine.trim();
+                String[] dataArray = trimmedLine.split(",");
+                if (Integer.parseInt(dataArray[0]) == transactionId) {
+                    continue;
+                }
+                writer.write(currentLine + System.getProperty("line.separator"));
+            }
+
+            writer.close();
+            reader.close();
+            // Delete the original file
+            transactionFile.delete();
+
+            // Rename the new file to the filename the original file had.
+            boolean successful = tempFile.renameTo(transactionFile);
+            if (successful) {
+                System.out.println("Transaction deleted successfully");
+            } else {
+                System.out.println("Transaction not deleted");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // 4 - View all transactions
+    public static void showTransactions(File transactionFile) {
+        // Get transaction
+        System.out.println("Transaction ID\t\tDate\t\t\tType\t\tAmount\t\tNote\t\tIs Recurring\t\tRecurring Days\t\tCategory ID");
+        System.out.println("-----------------------------------------------------------------------------------------------------------------------------------");
+
+        // Read the transactions from the file transactionFile
+        try (Scanner myReader = new Scanner(transactionFile)) {
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+
+                // Split the data into an array
+                String[] dataArray = data.split(",");
+                System.out.println(dataArray[0] + "\t\t\t" + dataArray[1] + "\t\t" + 
+                dataArray[2] + "\t\t" + dataArray[3] + "\t\t" + dataArray[4] + "\t\t" + dataArray[5] + "\t\t\t" + dataArray[6] + "\t\t\t" + dataArray[7]);
+            }
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 
@@ -205,9 +301,8 @@ public class App {
         System.out.println("Category ID\t\tCategory Name\t\tBudgeted Amount");
         System.out.println("------------------------------------------------------------------");
 
-        try (
-                // Read the categories from the file categoryFile
-                Scanner myReader = new Scanner(categoryFile)) {
+        // Read the categories from the file categoryFile
+        try (Scanner myReader = new Scanner(categoryFile)) {
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
 

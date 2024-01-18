@@ -1,6 +1,5 @@
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Scanner;
 
 enum TransactionType {
     INCOME,
@@ -8,7 +7,7 @@ enum TransactionType {
 }
 
 public class Transaction {
-    private int id = 0;
+    private int id;
     private double amount;
     private TransactionType type;
     private String note;
@@ -17,8 +16,8 @@ public class Transaction {
     private int category;
     private Date date;
 
-    public Transaction(double amount, TransactionType type, String note, boolean isRecurring, int recurringDay, int categoryId) {
-        id++;
+    public Transaction(int id, double amount, TransactionType type, String note, boolean isRecurring, int recurringDay, int categoryId) {
+        this.id = id;
         this.amount = amount;
         this.type = type;
         this.note = note;
