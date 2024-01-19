@@ -4,15 +4,14 @@ import models.Transaction;
 import models.enums.TransactionType;
 
 import java.io.File;
-import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.io.FileInputStream;
 
 import static services.ShowCategories.showCategories;
 
 public class GenerateTransactionViaUserInput {
-    public static Transaction generateTransactionViaUserInput(File categoryFile) {
-        Transaction transaction = null;
-        try (Scanner scanner = new Scanner(System.in)) {
+    public static Transaction generateTransactionViaUserInput(File categoryFile, File transactionFile, Scanner scanner) {
+        try {
             // Get Expense or Income
             System.out.println("Please enter the type: ");
             System.out.println("1. Expense");
@@ -43,20 +42,18 @@ public class GenerateTransactionViaUserInput {
             }
 
             // Get note
-            System.out.println("Please enter the note(single word): ");
+            System.out.println("Please enter the note: ");
             String note = scanner.next();
 
             boolean isRecurring = false;
             int recurringDay = 0;
 
-            if (type == TransactionType.INCOME) {
-                isRecurring = false;
-                recurringDay = 0;
-            } else {
+            if (type == TransactionType.EXPENSE) {
                 System.out.println("Please enter if the transaction is recurring: ");
                 System.out.println("1. Yes");
                 System.out.println("2. No");
                 int isRecurringInput = scanner.nextInt();
+
                 if (isRecurringInput == 1) {
                     isRecurring = true;
                 } else if (isRecurringInput == 2) {
@@ -71,13 +68,25 @@ public class GenerateTransactionViaUserInput {
                 recurringDay = scanner.nextInt();
             }
 
+            // Find the last transaction ID
+            int transactionId = 0;
+            FileInputStream fis = new FileInputStream(transactionFile);
+            byte[] byteArray = new byte[(int) transactionFile.length()];
+            fis.read(byteArray);
+            String data = new String(byteArray);
+            String[] stringArray = data.split("\n");
+
+            transactionId = stringArray.length + 1;
+            fis.close();
+
             // Create a new transaction
-            transaction = new Transaction(amount, type, note, isRecurring, recurringDay, categoryId);
+            Transaction transaction = new Transaction(transactionId, amount, type, note, isRecurring, recurringDay, categoryId);
 
             return transaction;
-        } catch (InputMismatchException e) {
-            System.out.println("Error: Invalid input!");
-            return transaction;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }
+

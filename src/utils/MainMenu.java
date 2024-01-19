@@ -3,9 +3,11 @@ package utils;
 import java.io.File;
 import java.util.Scanner;
 
+import static services.DeleteTransaction.deleteTransaction;
 import static services.EditTransaction.editTransaction;
 import static services.EnterNewTransaction.enterNewTransaction;
 import static services.ShowCategories.showCategories;
+import static services.ShowTransactions.showTransactions;
 
 public class MainMenu {
     public static void showMainMenu() {
@@ -25,24 +27,28 @@ public class MainMenu {
         System.out.println("7. Delete a category");
         System.out.println("8. View all categories");
         System.out.println("9. View a category");
+        System.out.println("0 - Exit");
 
         try (Scanner scanner = new Scanner(System.in)) {
             int userInput = scanner.nextInt();
+            boolean isContinue = true;
 
             switch (userInput) {
                 case 1:
                     System.out.println("********** Add a new transaction **********");
-                    enterNewTransaction(categoryFile, transactionFile);
+                    enterNewTransaction(categoryFile, transactionFile, scanner);
                     break;
                 case 2:
                     System.out.println("********** Edit a transaction **********");
-                    editTransaction(categoryFile, transactionFile);
+                    editTransaction(categoryFile, transactionFile, scanner);
                     break;
                 case 3:
-                    System.out.println("Delete a transaction");
+                    System.out.println("********** Delete a transaction **********");
+                    deleteTransaction(transactionFile, scanner);
                     break;
                 case 4:
-                    System.out.println("View all transactions");
+                    System.out.println("********** View all transactions **********");
+                    showTransactions(transactionFile);
                     break;
                 case 5:
                     System.out.println("Add a new category");
@@ -60,10 +66,29 @@ public class MainMenu {
                 case 9:
                     System.out.println("View a category");
                     break;
+                case 0:
+                    System.out.println("Exit - Thank you for using the application");
+                    isContinue = false;
+                    break;
                 default:
                     System.out.println("Invalid input");
-                    showMainMenu();
                     break;
+            }
+
+            if (!isContinue) {
+                return;
+            }
+
+            System.out.println("Do you want to continue? (Y/N)");
+            String continueInput = scanner.next();
+
+            System.out.println(continueInput);
+
+            if (continueInput.equals("Y") || continueInput.equals("y")) {
+                System.out.println("*********************************************************");
+                showMainMenu();
+            } else {
+                System.out.println("Thank you for using the application");
             }
         }
     }

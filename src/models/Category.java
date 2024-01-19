@@ -1,9 +1,5 @@
 package models;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-
 public class Category {
     private int id = 0;
     private String name;

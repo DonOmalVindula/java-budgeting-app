@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Transaction {
-    private int id = 0;
+    private int id;
     private double amount;
     private TransactionType type;
     private String note;
@@ -15,8 +15,8 @@ public class Transaction {
     private int category;
     private Date date;
 
-    public Transaction(double amount, TransactionType type, String note, boolean isRecurring, int recurringDay, int categoryId) {
-        id++;
+    public Transaction(int id, double amount, TransactionType type, String note, boolean isRecurring, int recurringDay, int categoryId) {
+        this.id = id;
         this.amount = amount;
         this.type = type;
         this.note = note;
@@ -41,7 +41,7 @@ public class Transaction {
     public String getNote() {
         return note;
     }
-
+    
 
     public boolean isRecurring() {
         return isRecurring;
@@ -63,11 +63,11 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public String getTransactionData(int transactionId) {
+    public String getTransactionData() {
         // Format date
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 
-        return transactionId + "," + formatter.format(this.date) + "," + this.type.toString() + "," + this.amount + "," +
-                this.note + "," + this.isRecurring + "," + this.recurringDay + "," + this.category;
+        return Integer.toString(id) + "," + formatter.format(this.date) + "," + this.type.toString() + "," + this.amount + "," +
+                this.note + "," + this.isRecurring + "," + Integer.toString(this.recurringDay) + "," + Integer.toString(this.category);
     }
 }
