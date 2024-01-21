@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 
-public class ShowCategory {
+public class ShowCategoryById {
     public static void showCategoryById(File categoryFile, Scanner scanner) {
         System.out.print("Enter the category ID to be viewed: ");
         int categoryId = scanner.nextInt();

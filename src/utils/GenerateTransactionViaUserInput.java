@@ -64,7 +64,7 @@ public class GenerateTransactionViaUserInput {
             }
 
             if (isRecurring) {
-                System.out.println("Please enter the recurring occurance in days: ");
+                System.out.println("Please enter the recurring occurrence in days: ");
                 recurringDay = scanner.nextInt();
             }
 

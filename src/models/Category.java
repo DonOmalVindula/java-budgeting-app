@@ -56,6 +56,10 @@ public class Category {
     }
 
     public String getCategoryData() {
-    return Integer.toString(id) + "," + this.name.toString() + "," + this.budgetAmount ;
+    return STR."\{id},\{this.name},\{this.budgetAmount}";
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.id = categoryId;
     }
 }
