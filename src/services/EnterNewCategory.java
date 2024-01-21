@@ -12,16 +12,14 @@ import static utils.GenerateCategoryViaUserInput.generateCategoryViaUserInput;
 public class EnterNewCategory {
     // 1 - Add a new category
     public static void enterNewCategory(File categoryFile, Scanner scanner) {
-
         Category category = generateCategoryViaUserInput(categoryFile, scanner);
 
         // Write the category to the file categoryFile
         try (FileWriter categoryWriter = new FileWriter(categoryFile, true)) {
-            categoryWriter.write("\n"+ category.getCategoryData() );
-            categoryWriter.close();
+            assert category != null;
+            categoryWriter.write(category.getCategoryData() + System.lineSeparator());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 }

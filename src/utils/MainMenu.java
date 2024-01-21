@@ -11,7 +11,7 @@ import static services.ShowTransactions.showTransactions;
 import static services.DeleteCategory.deleteCategory;
 import static services.EditCategory.editCategory;
 import static services.EnterNewCategory.enterNewCategory;
-import static services.ShowCategory.showCategoryById;;
+import static services.ShowCategoryById.showCategoryById;;
 
 public class MainMenu {
     public static void showMainMenu() {
