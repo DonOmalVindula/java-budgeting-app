@@ -8,6 +8,10 @@ import static services.EditTransaction.editTransaction;
 import static services.EnterNewTransaction.enterNewTransaction;
 import static services.ShowCategories.showCategories;
 import static services.ShowTransactions.showTransactions;
+import static services.DeleteCategory.deleteCategory;
+import static services.EditCategory.editCategory;
+import static services.EnterNewCategory.enterNewCategory;
+import static services.ShowCategory.showCategoryById;;
 
 public class MainMenu {
     public static void showMainMenu() {
@@ -52,12 +56,15 @@ public class MainMenu {
                     break;
                 case 5:
                     System.out.println("Add a new category");
+                    enterNewCategory(categoryFile,scanner);
                     break;
                 case 6:
                     System.out.println("Edit a category");
+                    editCategory(categoryFile, scanner);
                     break;
                 case 7:
                     System.out.println("Delete a category");
+                    deleteCategory(categoryFile, scanner);
                     break;
                 case 8:
                     System.out.println("********** View all categories **********");
@@ -65,6 +72,7 @@ public class MainMenu {
                     break;
                 case 9:
                     System.out.println("View a category");
+                    showCategoryById(categoryFile, scanner);
                     break;
                 case 0:
                     System.out.println("Exit - Thank you for using the application");
