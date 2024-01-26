@@ -13,7 +13,7 @@ public class EnterNewTransaction {
     // 1 - Add a new transaction
     public static void enterNewTransaction(File categoryFile, File transactionFile, Scanner scanner) {
 
-        Transaction transaction = generateTransactionViaUserInput(categoryFile, transactionFile, scanner);
+        Transaction transaction = generateTransactionViaUserInput(categoryFile, transactionFile, scanner, 0);
 
         // Write the transaction to the file transactionFile
         try (FileWriter transcationWriter = new FileWriter(transactionFile, true)) {

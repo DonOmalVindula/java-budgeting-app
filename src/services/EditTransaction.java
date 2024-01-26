@@ -25,7 +25,7 @@ public class EditTransaction {
                 String trimmedLine = currentLine.trim();
                 String[] dataArray = trimmedLine.split(",");
                 if (Integer.parseInt(dataArray[0]) == transactionId) {
-                    Transaction transaction = generateTransactionViaUserInput(categoryFile, transactionFile, scanner);
+                    Transaction transaction = generateTransactionViaUserInput(categoryFile, transactionFile, scanner, transactionId);
                     writer.write(transaction.getTransactionData() + System.getProperty("line.separator"));
                 } else {
                     writer.write(currentLine + System.getProperty("line.separator"));

@@ -8,7 +8,7 @@ public class ShowCategories {
     // 8 - View all categories
     public static void showCategories(File categoryFile) {
         // Get category
-        System.out.println("models.Category ID\t\tmodels.Category Name\t\tBudgeted Amount");
+        System.out.println("Category ID\t\tCategory Name\t\tBudgeted Amount");
         System.out.println("------------------------------------------------------------------");
 
         try (
@@ -22,7 +22,6 @@ public class ShowCategories {
                 System.out.println(dataArray[0] + "\t\t\t\t\t\t" + dataArray[1] + "\t\t\t\t" + dataArray[2]);
             }
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

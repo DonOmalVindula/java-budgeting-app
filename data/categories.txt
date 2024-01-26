@@ -2,4 +2,4 @@
 2, Transport,       20000.00
 3, Housing,       100000.00
 4, Entertainment,   20000.00
-5, Bills,           30000.00
+6,Subscriptions,5000.0

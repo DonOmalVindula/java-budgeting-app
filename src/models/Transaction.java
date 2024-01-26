@@ -70,4 +70,8 @@ public class Transaction {
         return Integer.toString(id) + "," + formatter.format(this.date) + "," + this.type.toString() + "," + this.amount + "," +
                 this.note + "," + this.isRecurring + "," + Integer.toString(this.recurringDay) + "," + Integer.toString(this.category);
     }
+
+    public Object thenReturn(Transaction mockTransaction) {
+        throw new UnsupportedOperationException("Unimplemented method 'thenReturn'");
+    }
 }

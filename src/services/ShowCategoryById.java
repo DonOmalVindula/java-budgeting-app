@@ -20,7 +20,7 @@ public class ShowCategoryById {
 
                 // Check if the current category ID matches the specified ID
                 if (Integer.parseInt(dataArray[0]) == categoryId) {
-                    System.out.println("models.Category ID\t\tmodels.Category Name\t\tBudgeted Amount");
+                    System.out.println("Category ID\t\tCategory Name\t\tBudgeted Amount");
                     System.out.println("------------------------------------------------------------------");
                     System.out.println(dataArray[0] + "\t\t\t\t\t\t" + dataArray[1] + "\t\t\t\t" + dataArray[2]);
                     return; // Exit the method after finding and displaying the category
@@ -30,7 +30,6 @@ public class ShowCategoryById {
             // If the category with the specified ID is not found
             System.out.println("Category with ID " + categoryId + " not found.");
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

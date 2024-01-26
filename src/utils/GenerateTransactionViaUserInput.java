@@ -10,7 +10,7 @@ import java.io.FileInputStream;
 import static services.ShowCategories.showCategories;
 
 public class GenerateTransactionViaUserInput {
-    public static Transaction generateTransactionViaUserInput(File categoryFile, File transactionFile, Scanner scanner) {
+    public static Transaction generateTransactionViaUserInput(File categoryFile, File transactionFile, Scanner scanner, int tid) {
         try {
             // Get Expense or Income
             System.out.println("Please enter the type: ");
@@ -70,14 +70,19 @@ public class GenerateTransactionViaUserInput {
 
             // Find the last transaction ID
             int transactionId = 0;
-            FileInputStream fis = new FileInputStream(transactionFile);
-            byte[] byteArray = new byte[(int) transactionFile.length()];
-            fis.read(byteArray);
-            String data = new String(byteArray);
-            String[] stringArray = data.split("\n");
 
-            transactionId = stringArray.length + 1;
-            fis.close();
+            if (tid != 0) {
+                transactionId = tid;
+            } else {
+                FileInputStream fis = new FileInputStream(transactionFile);
+                byte[] byteArray = new byte[(int) transactionFile.length()];
+                fis.read(byteArray);
+                String data = new String(byteArray);
+                String[] stringArray = data.split("\n");
+
+                transactionId = stringArray.length + 1;
+                fis.close();
+            }
 
             // Create a new transaction
             Transaction transaction = new Transaction(transactionId, amount, type, note, isRecurring, recurringDay, categoryId);

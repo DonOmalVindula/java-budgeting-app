@@ -21,7 +21,6 @@ public class ShowTransactions {
                 System.out.println(STR."\{dataArray[0]}\t\t\t\{dataArray[1]}\t\t\{dataArray[2]}\t\t\{dataArray[3]}\t\t\{dataArray[4]}\t\t\{dataArray[5]}\t\t\t\{dataArray[6]}\t\t\t\{dataArray[7]}");
             }
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
